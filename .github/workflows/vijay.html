@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google-like Search Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+        }
+        .logo {
+            margin-bottom: 24px;
+        }
+        .search-bar {
+            width: 60%;
+            max-width: 600px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #dfe1e5;
+            border-radius: 24px;
+            padding: 5px 10px;
+            background-color: #fff;
+            box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+        }
+        .search-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .icon {
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            cursor: pointer;
+        }
+        .search-button {
+            background-color: #f8f9fa;
+            border: 1px solid #f8f9fa;
+            border-radius: 4px;
+            color: #5f6368;
+            font-size: 14px;
+            padding: 8px 16px;
+            margin: 10px 4px;
+            cursor: pointer;
+        }
+        .search-button:hover {
+            border: 1px solid #dadce0;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        .icon img {
+            width: 20px;
+            height: 20px;
+        }
+        #file-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <img src="images/Mora Vijaya Bhaskara Reddy.svg" alt="Google logo">
+    </div>
+    <form class="search-bar" action="https://www.google.com/search" method="get" id="search-form">
+        <input type="text" name="q" class="search-input" id="search-input" placeholder="Search Google or type a URL">
+        <div class="icon" id="voice-search">
+            <img src="images/Googlemic.png" alt="Search by voice">
+        </div>
+        <div class="icon" id="lens-search">
+            <img src="images/Googlelens.png" alt="Search by Lens">
+        </div>
+    </form>
+    <div class="buttons">
+        <button class="search-button" type="submit" form="search-form">Google Search</button>
+        <button class="search-button" type="button" onclick="document.forms[0].q.value='I\'m feeling lucky'; document.forms[0].submit();">I'm Feeling Lucky</button>
+    </div>
+
+    <input type="file" id="file-input" accept="image/*" onchange="uploadImage(event)">
+
+    <script>
+        // Voice Search functionality
+        document.getElementById('voice-search').onclick = function() {
+            if ('webkitSpeechRecognition' in window) {
+                var recognition = new webkitSpeechRecognition();
+                recognition.lang = 'en-US';
+                recognition.start();
+                recognition.onresult = function(event) {
+                    document.getElementById('search-input').value = event.results[0][0].transcript;
+                    document.getElementById('search-form').submit();
+                };
+                recognition.onerror = function(event) {
+                    console.error(event.error);
+                };
+            } else {
+                alert('Voice search is not supported in this browser.');
+            }
+        };
+
+        // Lens Search functionality
+        document.getElementById('lens-search').onclick = function() {
+            document.getElementById('file-input').click();
+        };
+
+        // Function to handle image upload
+        function uploadImage(event) {
+            var file = event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var imageUrl = e.target.result;
+                    // Redirect to Google Images search with the uploaded image
+                    window.location.href = "https://www.google.com/searchbyimage?image_url=" + encodeURIComponent(imageUrl);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+</html>
